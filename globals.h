@@ -7,7 +7,7 @@
 
 #include "memory.h"
 
-extern unsigned char acc;		/* Registrador ACC (acumulador) */
+extern char acc;		/* Registrador ACC (acumulador) */
 extern unsigned char pc;		/* Registrador PC  (Program Counter) */
 extern unsigned char ds;		/* Registrador DS  (Data Section) */
 extern unsigned char cs;		/* Registrador CS  (Code Section) */

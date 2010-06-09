@@ -1,15 +1,14 @@
 CC = gcc
 CFLAGS = -c -Wall
-BUILDDIR = build/
 
-all: teste_main.o cpu.o
-	$(CC) $(BUILDDIR)main.o $(BUILDDIR)cpu.o -o $(BUILDDIR)main
+all: main.o cpu.o
+	$(CC) main.o cpu.o -o vm
 
 main.o: main.c cpu.h memory.h
-	$(CC) $(CFLAGS) $(BUILDDIR)main.c
+	$(CC) $(CFLAGS) main.c
 
 cpu.o: cpu.c cpu.h defines.h globals.h memory.h
-	$(CC) $(CFLAGS) $(BUILDDIR)cpu.c
+	$(CC) $(CFLAGS) cpu.c
 	
 clean:
-	rm -rf $(BUILDDIR)*.o $(BUILDDIR)main
+	rm -rf *.o vm

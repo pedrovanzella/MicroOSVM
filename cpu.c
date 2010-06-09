@@ -6,8 +6,8 @@
 #include "defines.h"
 #include "cpu.h"
 
-line mem[256];		        /* Nosso bloco de memoria */
-unsigned char acc;		/* Registrador ACC (acumulador) */
+line mem[256];	        /* Nosso bloco de memoria */
+char acc;				/* Registrador ACC (acumulador) */
 unsigned char pc;		/* Registrador PC  (Program Counter) */
 unsigned char ds;		/* Registrador DS  (Data Section) */
 unsigned char cs;		/* Registrador CS  (Code Section) */
@@ -45,24 +45,24 @@ int run_line()
 			break;
 		case 7:
 			//Se ACC > 0 salta para [op]
-			if(acc > 0) pc = mem[mem[pc].op];
+			if(acc > 0) pc = mem[pc + cs].op;
 			break;
 		case 8:
 			//Se ACC < 0 salta para [op]
-			if(acc < 0) pc = mem[mem[pc].op];
+			if(acc < 0) pc = mem[pc + cs].op;
 			break;
 		case 9:
 			//Se ACC == 0 salta para [op]
-			if(acc == 0) pc = mem[mem[pc].op];			
+			if(acc == 0) pc = mem[pc + cs].op;			
 			break;
 		case 10:
 			//In para [op]
 			printf("$< ");
-			scanf("%d", mem[mem[pc].op]);
+			scanf("%d", &mem[pc + ds].op);
 			break;
 		case 11:
 			//Out de [op]
-			printf("$> %d", mem[mem[pc].op]);
+			printf("$> %d", mem[pc + ds].op);
 			break;
 		case 12:
 			return PROG_END;
