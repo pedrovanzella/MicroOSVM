@@ -45,23 +45,24 @@ int run_line()
 			break;
 		case 7:
 			//Se ACC > 0 salta para [op]
-			
+			if(acc > 0) pc = mem[mem[pc].op];
 			break;
 		case 8:
 			//Se ACC < 0 salta para [op]
-			
+			if(acc < 0) pc = mem[mem[pc].op];
 			break;
 		case 9:
 			//Se ACC == 0 salta para [op]
-			
+			if(acc == 0) pc = mem[mem[pc].op];			
 			break;
 		case 10:
 			//In para [op]
-			
+			printf("$< ");
+			scanf("%d", mem[mem[pc].op]);
 			break;
 		case 11:
 			//Out de [op]
-			
+			printf("$> %d", mem[mem[pc].op]);
 			break;
 		case 12:
 			return PROG_END;
