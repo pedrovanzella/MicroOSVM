@@ -58,11 +58,11 @@ int run_line()
 		case 10:
 			//In para [op]
 			printf("$< ");
-			scanf("%d", &mem[pc + ds].op);
+			scanf("%d", &mem[mem[pc + cs].op + ds].inst);
 			break;
 		case 11:
 			//Out de [op]
-			printf("$> %d", mem[pc + ds].op);
+			printf("$> %d", mem[mem[pc + cs].op + ds].inst);
 			break;
 		case 12:
 			return PROG_END;
