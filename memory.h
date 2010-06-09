@@ -1,16 +1,17 @@
+#ifndef MEMORY_H
+#define MEMORY_H
+
 /*********************
 ** STRUCT DA MEMORIA *
 *********************/
 
 /*linha do programa, contem operacao e operando*/
-struct line 
+typedef struct line 
 {
-	char inst;
-	char op;
-};
+	unsigned char inst; /* Caso seja segmento de dados, guarda o dado */
+	unsigned char op;
+} line;
 
-/*memoria da maquina virtual, 256 posições*/
-struct memory
-{
-	struct line[256];
-};
+extern line mem[256];  /* Nosso bloco de memoria */
+
+#endif /*MEMORY_H*/

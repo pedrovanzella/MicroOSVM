@@ -1,11 +1,15 @@
+#ifndef GLOBALS_H
+#define GLOBALS_H
+
 /***********
 ** GLOBAIS *
 ***********/
 
 #include "memory.h"
 
-extern struct memory mem;  /* Nosso bloco de memoria */
-extern char acc;				/* Registrador ACC (acumulador) */
-extern char pc;				/* Registrador PC  (Program Counter) */
-extern char ds;				/* Registrador DS	 (Data Section) */
-extern char cs;				/* Registrador CS  (Code Section) */
+extern unsigned char acc;		/* Registrador ACC (acumulador) */
+extern unsigned char pc;		/* Registrador PC  (Program Counter) */
+extern unsigned char ds;		/* Registrador DS  (Data Section) */
+extern unsigned char cs;		/* Registrador CS  (Code Section) */
+
+#endif /*GLOBAIS_H*/

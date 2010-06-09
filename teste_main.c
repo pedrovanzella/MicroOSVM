@@ -3,6 +3,7 @@
 ********************************************/
 
 #include <stdio.h>
+#include "cpu.h"
 
 int main (int argc, char* argv[])
 {
@@ -10,14 +11,15 @@ int main (int argc, char* argv[])
 	char x, y;
 	char nomeArq[30];
 
-	printf("in: \n");
+	printf("in: ");
 	scanf("%s", nomeArq);
 	f = fopen(nomeArq, "r");
 	
 	while(!feof(f))
 	{
 		fscanf(f, "%d %d", &x, &y);
-		printf("\nx= %d\ty= %d", x, y);
+		printf("x= %d\ty= %d\n", x, y);
 	}
+	return 0;
 }
 
