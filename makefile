@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -c -Wall -lpthread
+CFLAGS = -g -c -Wall -lpthread
 
 all: main.o cpu.o
 	$(CC) main.o cpu.o -o vm
