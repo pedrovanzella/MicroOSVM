@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <pthread.h>
+#include <stdlib.h>
 #include "cpu.h"
 #include "memory.h"
 #include "globals.h"
@@ -26,14 +27,14 @@ int main (int argc, char* argv[])
 	if(argc != 4)
 	{
 		printf("Preciso de 3 terminais para continuar. Chame com %s $tty $tty $tty", argv[0]);
-		exit 1;
+		exit(1);
 	}
 	
 	//Open terminals for append
 	
-	tty0 = fopen(argv[1], a+);
-	tty1 = fopen(argv[2], a+);
-	tty2 = fopen(argv[3], a+);
+	tty0 = fopen(argv[1], "a+");
+	tty1 = fopen(argv[2], "a+");
+	tty2 = fopen(argv[3], "a+");
 	
 	if(!tty0)
 	{
