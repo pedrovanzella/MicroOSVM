@@ -22,6 +22,9 @@ void *tty0_thread();
 void *tty1_thread();
 void *tty2_thread();
 
+process *p0, *p1, *p2;
+process *running;
+
 int main (int argc, char* argv[])
 {
 	if(argc != 4)
@@ -88,6 +91,8 @@ void* tty0_thread()
 		return -1;
 	}
 	
+	running = p0; // Rodando p0.
+	
 	//Carregar programa na memória.
 	while(!feof(f))
 	{
@@ -99,13 +104,17 @@ void* tty0_thread()
 	printf("Rodando!\n\n");
 	
 	//Run program.
-	pc = 0;
-	cs = 0;
-	ds = 128;
+	//Setar os registradores do programa rodando. Isto vai para uma função quando o gerenciador de memória funcionar.
+	running->tty = tty0;
+	running->acc = 0;
+	running->pc = 0;
+	running->cs = 0;
+	running->ds = 128;
+	
 	for(i = 0; i <= numlines - 1; i++)
 	{
 		fprintf(tty0, "Register dump!\n");
-		fprintf(tty0, "PC: %d\t CS: %d\t DS: %d\t ACC: %d\n", pc, cs, ds, acc);
+		fprintf(tty0, "PC: %d\t CS: %d\t DS: %d\t ACC: %d\n", running->pc, running->cs, running->ds, running->acc);
 		fprintf(tty0, "line %d: ", i);
 		run_line();
 		pc++;
@@ -134,6 +143,8 @@ void* tty1_thread()
 		return -1;
 	}
 	
+	running = p1; // Rodando p1.
+	
 	//Carregar programa na memória.
 	while(!feof(f))
 	{
@@ -145,13 +156,17 @@ void* tty1_thread()
 	printf("Rodando!\n\n");
 	
 	//Run program.
-	pc = 0;
-	cs = 0;
-	ds = 128;
+	//Setar os registradores do programa rodando. Isto vai para uma função quando o gerenciador de memória funcionar.
+	running->tty = tty1;
+	running->acc = 0;
+	running->pc = 0;
+	running->cs = 0;
+	running->ds = 128;
+	
 	for(i = 0; i <= numlines - 1; i++)
 	{
 		fprintf(tty1, "Register dump!\n");
-		fprintf(tty1, "PC: %d\t CS: %d\t DS: %d\t ACC: %d\n", pc, cs, ds, acc);
+		fprintf(tty1, "PC: %d\t CS: %d\t DS: %d\t ACC: %d\n", running->pc, running->cs, running->ds, running->acc);
 		fprintf(tty1, "line %d: ", i);
 		run_line();
 		pc++;
@@ -180,6 +195,8 @@ void* tty2_thread()
 		return -1;
 	}
 	
+	running = p2; // Rodando p2.
+	
 	//Carregar programa na memória.
 	while(!feof(f))
 	{
@@ -191,13 +208,17 @@ void* tty2_thread()
 	printf("Rodando!\n\n");
 	
 	//Run program.
-	pc = 0;
-	cs = 0;
-	ds = 128;
+	//Setar os registradores do programa rodando. Isto vai para uma função quando o gerenciador de memória funcionar.
+	running->tty = tty2;
+	running->acc = 0;
+	running->pc = 0;
+	running->cs = 0;
+	running->ds = 128;
+	
 	for(i = 0; i <= numlines - 1; i++)
 	{
 		fprintf(tty2, "Register dump!\n");
-		fprintf(tty2, "PC: %d\t CS: %d\t DS: %d\t ACC: %d\n", pc, cs, ds, acc);
+		fprintf(tty2, "PC: %d\t CS: %d\t DS: %d\t ACC: %d\n", running->pc, running->cs, running->ds, running->acc);
 		fprintf(tty2, "line %d: ", i);
 		run_line();
 		pc++;

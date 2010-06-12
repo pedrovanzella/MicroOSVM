@@ -7,62 +7,64 @@
 #include "cpu.h"
 
 line mem[256];	        /* Nosso bloco de memoria */
-char acc;				/* Registrador ACC (acumulador) */
-unsigned char pc;		/* Registrador PC  (Program Counter) */
-unsigned char ds;		/* Registrador DS  (Data Section) */
-unsigned char cs;		/* Registrador CS  (Code Section) */
+char acc;				/* Registrador acc (acumulador) */
+unsigned char pc;		/* Registrador pc  (Program Counter) */
+unsigned char ds;		/* Registrador ds  (Data Section) */
+unsigned char cs;		/* Registrador cs  (Code Section) */
+
+process* running;
 
 int run_line()
 {
-	switch(mem[pc + cs].inst)
+	switch(mem[running->pc + running->cs].inst)
 	{
 		case 0:
-			/* ACC = ACC + op */
-			acc = acc + mem[mem[pc + cs].op + ds].inst;
+			/* running->acc = running->acc + op */
+			running->acc = running->acc + mem[mem[running->pc + running->cs].op + running->ds].inst;
 			break;
 		case 1:
-			/* ACC = ACC - op */
-			acc = acc - mem[mem[pc + cs].op + ds].inst;
+			/* running->acc = running->acc - op */
+			running->acc = running->acc - mem[mem[running->pc + running->cs].op + running->ds].inst;
 			break;
 		case 2:
-			/* ACC = ACC * op */
-			acc = acc * mem[mem[pc + cs].op + ds].inst;
+			/* running->acc = running->acc * op */
+			running->acc = running->acc * mem[mem[running->pc + running->cs].op + running->ds].inst;
 			break;
 		case 3:
-			/* ACC = ACC / op */
-			acc = acc / mem[mem[pc + cs].op + ds].inst;
+			/* running->acc = running->acc / op */
+			running->acc = running->acc / mem[mem[running->pc + running->cs].op + running->ds].inst;
 			break;
 		case 4:
-			/* ACC = op */
-			acc = mem[mem[pc + cs].op + ds].inst;
+			/* running->acc = op */
+			running->acc = mem[mem[running->pc + running->cs].op + running->ds].inst;
 			break;
 		case 5:
-			/* op = ACC */
-			mem[mem[pc].op + ds].inst = acc;
+			/* op = running->acc */
+			mem[mem[running->pc].op + running->ds].inst = running->acc;
 			break;
 		case 6:
 			//Inválido	
 			break;
 		case 7:
-			//Se ACC > 0 salta para [op]
-			if(acc > 0) pc = mem[pc + cs].op;
+			//Se running->acc > 0 salta para [op]
+			if(running->acc > 0) running->pc = mem[running->pc + running->cs].op;
 			break;
 		case 8:
-			//Se ACC < 0 salta para [op]
-			if(acc < 0) pc = mem[pc + cs].op;
+			//Se running->acc < 0 salta para [op]
+			if(running->acc < 0) running->pc = mem[running->pc + running->cs].op;
 			break;
 		case 9:
-			//Se ACC == 0 salta para [op]
-			if(acc == 0) pc = mem[pc + cs].op;			
+			//Se running->acc == 0 salta para [op]
+			if(running->acc == 0) running->pc = mem[running->pc + running->cs].op;			
 			break;
 		case 10:
 			//In para [op]
 			printf("$< ");
-			scanf("%d", &mem[mem[pc + cs].op + ds].inst);
+			fscanf(running->tty, "%d", &mem[mem[running->pc + running->cs].op + running->ds].inst);
 			break;
 		case 11:
 			//Out de [op]
-			printf("$> %d", mem[mem[pc + cs].op + ds].inst);
+			fprintf(running->tty, "$> %d", mem[mem[running->pc + running->cs].op + running->ds].inst);
 			break;
 		case 12:
 			return PROG_END;
