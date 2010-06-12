@@ -22,8 +22,8 @@ void *tty0_thread();
 void *tty1_thread();
 void *tty2_thread();
 
-process *p0, *p1, *p2;
-process *running;
+process p0, p1, p2;
+process running;
 
 int main (int argc, char* argv[])
 {
@@ -70,6 +70,8 @@ int main (int argc, char* argv[])
 	pthread_join(tid0, NULL);
 	pthread_join(tid1, NULL);
 	pthread_join(tid2, NULL);
+	
+	return 0;
 }
 
 void* tty0_thread()
@@ -120,8 +122,6 @@ void* tty0_thread()
 		pc++;
 		fprintf(tty0, "\n");
 	}
-	
-	return 0;
 }
 
 void* tty1_thread()
@@ -172,8 +172,6 @@ void* tty1_thread()
 		pc++;
 		fprintf(tty1, "\n");
 	}
-	
-	return 0;
 }
 
 void* tty2_thread()
@@ -224,6 +222,4 @@ void* tty2_thread()
 		pc++;
 		fprintf(tty2, "\n");
 	}
-	
-	return 0;
 }

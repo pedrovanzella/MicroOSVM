@@ -13,6 +13,6 @@ extern unsigned char pc;		/* Registrador PC  (Program Counter) */
 extern unsigned char ds;		/* Registrador DS  (Data Section) */
 extern unsigned char cs;		/* Registrador CS  (Code Section) */
 
-extern *process running;
+extern process running;
 
 #endif /*GLOBAIS_H*/

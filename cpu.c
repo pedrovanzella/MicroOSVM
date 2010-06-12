@@ -12,7 +12,7 @@ unsigned char pc;		/* Registrador pc  (Program Counter) */
 unsigned char ds;		/* Registrador ds  (Data Section) */
 unsigned char cs;		/* Registrador cs  (Code Section) */
 
-process* running;
+process running;
 
 int run_line()
 {
