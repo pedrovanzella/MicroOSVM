@@ -13,5 +13,6 @@ typedef struct line
 } line;
 
 extern line mem[256];  /* Nosso bloco de memoria */
+extern char allocated_blocks[4]; /*Vetor de 4 posições para indexar quais blocos de memória estão alocados*/
 
 #endif /*MEMORY_H*/
