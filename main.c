@@ -16,6 +16,7 @@ unsigned char ds;
 char acc;
 
 pthread_t tid0, tid1, tid2;
+pthread_mutex_t allocatorMutex = PTHREAD_MUTEX_INITIALIZER;
 
 FILE *tty0, *tty1, *tty2;
 
@@ -103,34 +104,44 @@ void* tty0_thread()
 		}
 	
 		running = p0; // Rodando p0.
-	
+		running->tty = tty0;
+		
+		pthread_mutex_lock(&allocatorMutex);
+			if(allocate_block() == OUT_OF_MEMORY)
+			{
+				printf("SEM MEMÓRIA");
+				continue;
+			}
+		pthread_mutex_unlock(&allocatorMutex);
+			
 		//Carregar programa na memória.
 		while(!feof(f))
 		{
-			fscanf(f, "%d %d", &mem[numlines].inst, &mem[numlines].op);
-			fprintf(tty0, "i= %d\to= %d\n", mem[numlines].inst, mem[numlines].op);
+			fscanf(f, "%d %d", &mem[numlines + running->cs].inst, &mem[numlines + running->cs].op);
+			printf("inst= %d\top= %d\n", mem[numlines + running->cs].inst, mem[numlines + running->cs].op);
 			numlines++;
 		}
 	
 		printf("Rodando!\n\n");
 	
-		//Run program.
-		//Setar os registradores do programa rodando. Isto vai para uma função quando o gerenciador de memória funcionar.
-		running->tty = tty0;
-		running->acc = 0;
-		running->pc = 0;
-		running->cs = 0;
-		running->ds = 128;
-	
 		for(i = 0; i <= numlines - 1; i++)
 		{
-			fprintf(tty0, "Register dump!\n");
-			fprintf(tty0, "PC: %d\t CS: %d\t DS: %d\t ACC: %d\n", running->pc, running->cs, running->ds, running->acc);
-			fprintf(tty0, "line %d: ", i);
+			printf("Register dump!\n");
+			printf("PC: %d\t CS: %d\t DS: %d\t ACC: %d\n", running->pc, running->cs, running->ds, running->acc);
+			
 			run_line();
 			running->pc++;
-			fprintf(tty0, "\n");
 		}
+		//Terminou execução
+		
+		pthread_mutex_lock(&allocatorMutex);
+			if(free_memory_block(running->block) == UNALLOCATED_MEM)
+			{
+				printf("Memória já foi desalocada. Algo muito errado aconteceu.");
+				continue;
+			}
+		pthread_mutex_unlock(&allocatorMutex);
+		
 	}
 }
 
@@ -156,35 +167,43 @@ void* tty1_thread()
 		}
 	
 		running = p1; // Rodando p1.
-	
-		//Run program.
-		//Setar os registradores do programa rodando. Isto vai para uma função quando o gerenciador de memória funcionar.
 		running->tty = tty1;
-		running->acc = 0;
-		running->pc = 0;
-		running->cs = 0;
-		running->ds = 128;
 	
+		pthread_mutex_lock(&allocatorMutex);
+			if(allocate_block() == OUT_OF_MEMORY)
+			{
+				printf("SEM MEMÓRIA");
+				continue;
+			}
+		pthread_mutex_unlock(&allocatorMutex);
+			
 		//Carregar programa na memória.
 		while(!feof(f))
 		{
-			fscanf(f, "%d %d", &mem[numlines + running->pc].inst, &mem[numlines + running->pc].op);
-			fprintf(tty1, "i= %d\to= %d\n", mem[numlines + running->pc].inst, mem[numlines + running->pc].op);
+			fscanf(f, "%d %d", &mem[numlines + running->cs].inst, &mem[numlines + running->cs].op);
+			printf("inst= %d\top= %d\n", mem[numlines + running->cs].inst, mem[numlines + running->cs].op);
 			numlines++;
 		}
 	
 		printf("Rodando!\n\n");
-
 	
 		for(i = 0; i <= numlines - 1; i++)
 		{
-			fprintf(tty1, "Register dump!\n");
-			fprintf(tty1, "PC: %d\t CS: %d\t DS: %d\t ACC: %d\n", running->pc, running->cs, running->ds, running->acc);
-			fprintf(tty1, "line %d: ", i);
+			printf("Register dump!\n");
+			printf("PC: %d\t CS: %d\t DS: %d\t ACC: %d\n", running->pc, running->cs, running->ds, running->acc);
+			
 			run_line();
 			running->pc++;
-			fprintf(tty1, "\n");
 		}
+		//Terminou execução
+		
+		pthread_mutex_lock(&allocatorMutex);
+			if(free_memory_block(running->block) == UNALLOCATED_MEM)
+			{
+				printf("Memória já foi desalocada. Algo muito errado aconteceu.");
+				continue;
+			}
+		pthread_mutex_unlock(&allocatorMutex);
 	}
 }
 
@@ -210,20 +229,21 @@ void* tty2_thread()
 		}
 	
 		running = p2; // Rodando p2.
-	
-		//Run program.
-		//Setar os registradores do programa rodando. Isto vai para uma função quando o gerenciador de memória funcionar.
 		running->tty = tty2;
-		running->acc = 0;
-		running->pc = 0;
-		running->cs = 0;
-		running->ds = 128;
-	
+		
+		pthread_mutex_lock(&allocatorMutex);
+			if(allocate_block() == OUT_OF_MEMORY)
+			{
+				printf("SEM MEMÓRIA");
+				continue;
+			}
+		pthread_mutex_unlock(&allocatorMutex);
+			
 		//Carregar programa na memória.
 		while(!feof(f))
 		{
-			fscanf(f, "%d %d", &mem[numlines + running->pc].inst, &mem[numlines + running->pc].op);
-			fprintf(tty2, "i= %d\to= %d\n", mem[numlines + running->pc].inst, mem[numlines + running->pc].op);
+			fscanf(f, "%d %d", &mem[numlines + running->cs].inst, &mem[numlines + running->cs].op);
+			printf("inst= %d\top= %d\n", mem[numlines + running->cs].inst, mem[numlines + running->cs].op);
 			numlines++;
 		}
 	
@@ -231,12 +251,20 @@ void* tty2_thread()
 	
 		for(i = 0; i <= numlines - 1; i++)
 		{
-			fprintf(tty2, "Register dump!\n");
-			fprintf(tty2, "PC: %d\t CS: %d\t DS: %d\t ACC: %d\n", running->pc, running->cs, running->ds, running->acc);
-			fprintf(tty2, "line %d: ", i);
+			printf("Register dump!\n");
+			printf("PC: %d\t CS: %d\t DS: %d\t ACC: %d\n", running->pc, running->cs, running->ds, running->acc);
+			
 			run_line();
 			running->pc++;
-			fprintf(tty2, "\n");
 		}
+		//Terminou execução
+		
+		pthread_mutex_lock(&allocatorMutex);
+			if(free_memory_block(running->block) == UNALLOCATED_MEM)
+			{
+				printf("Memória já foi desalocada. Algo muito errado aconteceu.");
+				continue;
+			}
+		pthread_mutex_unlock(&allocatorMutex);
 	}
 }

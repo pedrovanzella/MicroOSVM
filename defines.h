@@ -16,6 +16,7 @@ typedef struct prcs {
 	unsigned char ds;		/* Registrador DS  (Data Section) */
 	unsigned char cs;		/* Registrador CS  (Code Section) */
 	
+	unsigned char block; 	/* Bloco de memória do programa */
 	FILE* tty;			    /* Nome do terminal */	
 } *process;
 

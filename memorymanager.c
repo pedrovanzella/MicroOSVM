@@ -21,6 +21,7 @@ int allocate_block()
 		{
 			printf("Alocando bloco %d para processo.", i);
 			allocated_blocks[i] = 1;
+			running->block = i;
 			if(i == 0) running->cs = 0; //Primeiro bloco deve começar em 0, não -1.
 			else running->cs = (i * 32) - 1; // Código do programa começa em 0, 31, 63 ou 95
 			running->ds = (i * 32) + 128; // Dados do programa começam em 128, 160, 192 ou 224
