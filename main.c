@@ -82,151 +82,160 @@ int main (int argc, char* argv[])
 
 void* tty0_thread()
 {
-	FILE* f;
-	char fileName[30];
+	while(1)
+	{
+		FILE* f;
+		char fileName[30];
 	
-	int numlines = 0;
-	int i; //Standard iterator.
+		int numlines = 0;
+		int i; //Standard iterator.
 
-	fprintf(tty0, "in: ");
-	fscanf(tty0, "%s", fileName);
+		fprintf(tty0, "in: ");
+		fscanf(tty0, "%s", fileName);
 	
-	f = fopen(fileName, "r");
+		f = fopen(fileName, "r");
 
-	if(!f)
-	{
-		printf("Arquivo inválido!");
-		exit(-1);
-	}
+		if(!f)
+		{
+			printf("Arquivo inválido!");
+			exit(-1);
+		}
 	
-	running = p0; // Rodando p0.
+		running = p0; // Rodando p0.
 	
-	//Carregar programa na memória.
-	while(!feof(f))
-	{
-		fscanf(f, "%d %d", &mem[numlines].inst, &mem[numlines].op);
-		fprintf(tty0, "i= %d\to= %d\n", mem[numlines].inst, mem[numlines].op);
-		numlines++;
-	}
+		//Carregar programa na memória.
+		while(!feof(f))
+		{
+			fscanf(f, "%d %d", &mem[numlines].inst, &mem[numlines].op);
+			fprintf(tty0, "i= %d\to= %d\n", mem[numlines].inst, mem[numlines].op);
+			numlines++;
+		}
 	
-	printf("Rodando!\n\n");
+		printf("Rodando!\n\n");
 	
-	//Run program.
-	//Setar os registradores do programa rodando. Isto vai para uma função quando o gerenciador de memória funcionar.
-	running->tty = tty0;
-	running->acc = 0;
-	running->pc = 0;
-	running->cs = 0;
-	running->ds = 128;
+		//Run program.
+		//Setar os registradores do programa rodando. Isto vai para uma função quando o gerenciador de memória funcionar.
+		running->tty = tty0;
+		running->acc = 0;
+		running->pc = 0;
+		running->cs = 0;
+		running->ds = 128;
 	
-	for(i = 0; i <= numlines - 1; i++)
-	{
-		fprintf(tty0, "Register dump!\n");
-		fprintf(tty0, "PC: %d\t CS: %d\t DS: %d\t ACC: %d\n", running->pc, running->cs, running->ds, running->acc);
-		fprintf(tty0, "line %d: ", i);
-		run_line();
-		running->pc++;
-		fprintf(tty0, "\n");
+		for(i = 0; i <= numlines - 1; i++)
+		{
+			fprintf(tty0, "Register dump!\n");
+			fprintf(tty0, "PC: %d\t CS: %d\t DS: %d\t ACC: %d\n", running->pc, running->cs, running->ds, running->acc);
+			fprintf(tty0, "line %d: ", i);
+			run_line();
+			running->pc++;
+			fprintf(tty0, "\n");
+		}
 	}
 }
 
 void* tty1_thread()
 {
-	FILE* f;
-	char fileName[30];
-	
-	int numlines = 0;
-	int i; //Standard iterator.
-
-	fprintf(tty1, "in: ");
-	fscanf(tty1, "%s", fileName);
-	
-	f = fopen(fileName, "r");
-
-	if(!f)
+	while(1)
 	{
-		printf("Arquivo inválido!");
-		exit(-1);
-	}
+		FILE* f;
+		char fileName[30];
 	
-	running = p1; // Rodando p1.
+		int numlines = 0;
+		int i; //Standard iterator.
+
+		fprintf(tty1, "in: ");
+		fscanf(tty1, "%s", fileName);
 	
-	//Run program.
-	//Setar os registradores do programa rodando. Isto vai para uma função quando o gerenciador de memória funcionar.
-	running->tty = tty1;
-	running->acc = 0;
-	running->pc = 0;
-	running->cs = 0;
-	running->ds = 128;
+		f = fopen(fileName, "r");
+
+		if(!f)
+		{
+			printf("Arquivo inválido!");
+			exit(-1);
+		}
 	
-	//Carregar programa na memória.
-	while(!feof(f))
-	{
-		fscanf(f, "%d %d", &mem[numlines + running->pc].inst, &mem[numlines + running->pc].op);
-		fprintf(tty1, "i= %d\to= %d\n", mem[numlines + running->pc].inst, mem[numlines + running->pc].op);
-		numlines++;
-	}
+		running = p1; // Rodando p1.
 	
-	printf("Rodando!\n\n");
+		//Run program.
+		//Setar os registradores do programa rodando. Isto vai para uma função quando o gerenciador de memória funcionar.
+		running->tty = tty1;
+		running->acc = 0;
+		running->pc = 0;
+		running->cs = 0;
+		running->ds = 128;
+	
+		//Carregar programa na memória.
+		while(!feof(f))
+		{
+			fscanf(f, "%d %d", &mem[numlines + running->pc].inst, &mem[numlines + running->pc].op);
+			fprintf(tty1, "i= %d\to= %d\n", mem[numlines + running->pc].inst, mem[numlines + running->pc].op);
+			numlines++;
+		}
+	
+		printf("Rodando!\n\n");
 
 	
-	for(i = 0; i <= numlines - 1; i++)
-	{
-		fprintf(tty1, "Register dump!\n");
-		fprintf(tty1, "PC: %d\t CS: %d\t DS: %d\t ACC: %d\n", running->pc, running->cs, running->ds, running->acc);
-		fprintf(tty1, "line %d: ", i);
-		run_line();
-		running->pc++;
-		fprintf(tty1, "\n");
+		for(i = 0; i <= numlines - 1; i++)
+		{
+			fprintf(tty1, "Register dump!\n");
+			fprintf(tty1, "PC: %d\t CS: %d\t DS: %d\t ACC: %d\n", running->pc, running->cs, running->ds, running->acc);
+			fprintf(tty1, "line %d: ", i);
+			run_line();
+			running->pc++;
+			fprintf(tty1, "\n");
+		}
 	}
 }
 
 void* tty2_thread()
 {
-	FILE* f;
-	char fileName[30];
+	while(1)
+	{
+		FILE* f;
+		char fileName[30];
 	
-	int numlines = 0;
-	int i; //Standard iterator.
+		int numlines = 0;
+		int i; //Standard iterator.
 
-	fprintf(tty2, "in: ");
-	fscanf(tty2, "%s", fileName);
+		fprintf(tty2, "in: ");
+		fscanf(tty2, "%s", fileName);
 	
-	f = fopen(fileName, "r");
+		f = fopen(fileName, "r");
 
-	if(!f)
-	{
-		printf("Arquivo inválido!");
-		exit(-1);
-	}
+		if(!f)
+		{
+			printf("Arquivo inválido!");
+			exit(-1);
+		}
 	
-	running = p2; // Rodando p2.
+		running = p2; // Rodando p2.
 	
-	//Run program.
-	//Setar os registradores do programa rodando. Isto vai para uma função quando o gerenciador de memória funcionar.
-	running->tty = tty2;
-	running->acc = 0;
-	running->pc = 0;
-	running->cs = 0;
-	running->ds = 128;
+		//Run program.
+		//Setar os registradores do programa rodando. Isto vai para uma função quando o gerenciador de memória funcionar.
+		running->tty = tty2;
+		running->acc = 0;
+		running->pc = 0;
+		running->cs = 0;
+		running->ds = 128;
 	
-	//Carregar programa na memória.
-	while(!feof(f))
-	{
-		fscanf(f, "%d %d", &mem[numlines + running->pc].inst, &mem[numlines + running->pc].op);
-		fprintf(tty2, "i= %d\to= %d\n", mem[numlines + running->pc].inst, mem[numlines + running->pc].op);
-		numlines++;
-	}
+		//Carregar programa na memória.
+		while(!feof(f))
+		{
+			fscanf(f, "%d %d", &mem[numlines + running->pc].inst, &mem[numlines + running->pc].op);
+			fprintf(tty2, "i= %d\to= %d\n", mem[numlines + running->pc].inst, mem[numlines + running->pc].op);
+			numlines++;
+		}
 	
-	printf("Rodando!\n\n");
+		printf("Rodando!\n\n");
 	
-	for(i = 0; i <= numlines - 1; i++)
-	{
-		fprintf(tty2, "Register dump!\n");
-		fprintf(tty2, "PC: %d\t CS: %d\t DS: %d\t ACC: %d\n", running->pc, running->cs, running->ds, running->acc);
-		fprintf(tty2, "line %d: ", i);
-		run_line();
-		running->pc++;
-		fprintf(tty2, "\n");
+		for(i = 0; i <= numlines - 1; i++)
+		{
+			fprintf(tty2, "Register dump!\n");
+			fprintf(tty2, "PC: %d\t CS: %d\t DS: %d\t ACC: %d\n", running->pc, running->cs, running->ds, running->acc);
+			fprintf(tty2, "line %d: ", i);
+			run_line();
+			running->pc++;
+			fprintf(tty2, "\n");
+		}
 	}
 }

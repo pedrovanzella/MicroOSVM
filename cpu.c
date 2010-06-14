@@ -67,6 +67,7 @@ int run_line()
 			fprintf(running->tty, "$> %d", mem[mem[running->pc + running->cs].op + running->ds].inst);
 			break;
 		case 12:
+			fprintf(running->tty, "Fim de execução\n");
 			return PROG_END;
 			break;
 		default:
