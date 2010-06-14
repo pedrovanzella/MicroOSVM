@@ -43,7 +43,7 @@ int run_line()
 			mem[mem[running->pc].op + running->ds].inst = running->acc;
 			break;
 		case 6:
-			//Inválido	
+			//NOP	
 			break;
 		case 7:
 			//Se running->acc > 0 salta para [op]
@@ -59,7 +59,7 @@ int run_line()
 			break;
 		case 10:
 			//In para [op]
-			printf("$< ");
+			fprintf(running->tty, "$< ");
 			fscanf(running->tty, "%d", &mem[mem[running->pc + running->cs].op + running->ds].inst);
 			break;
 		case 11:

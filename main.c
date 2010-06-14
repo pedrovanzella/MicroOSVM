@@ -59,6 +59,12 @@ int main (int argc, char* argv[])
 	
 	//É, multiplos ifs pra testar. Eu sei.
 	
+	p0 = (process)malloc(sizeof(process));
+	p1 = (process)malloc(sizeof(process));
+	p2 = (process)malloc(sizeof(process));
+	running = (process)malloc(sizeof(process));
+	
+	
 	printf("Criando threads\n");
 	
 	pthread_create(&tid0, NULL, tty0_thread, NULL);
@@ -90,7 +96,7 @@ void* tty0_thread()
 	if(!f)
 	{
 		printf("Arquivo inválido!");
-		return -1;
+		exit(-1);
 	}
 	
 	running = p0; // Rodando p0.
@@ -119,7 +125,7 @@ void* tty0_thread()
 		fprintf(tty0, "PC: %d\t CS: %d\t DS: %d\t ACC: %d\n", running->pc, running->cs, running->ds, running->acc);
 		fprintf(tty0, "line %d: ", i);
 		run_line();
-		pc++;
+		running->pc++;
 		fprintf(tty0, "\n");
 	}
 }
@@ -140,20 +146,10 @@ void* tty1_thread()
 	if(!f)
 	{
 		printf("Arquivo inválido!");
-		return -1;
+		exit(-1);
 	}
 	
 	running = p1; // Rodando p1.
-	
-	//Carregar programa na memória.
-	while(!feof(f))
-	{
-		fscanf(f, "%d %d", &mem[numlines].inst, &mem[numlines].op);
-		fprintf(tty1, "i= %d\to= %d\n", mem[numlines].inst, mem[numlines].op);
-		numlines++;
-	}
-	
-	printf("Rodando!\n\n");
 	
 	//Run program.
 	//Setar os registradores do programa rodando. Isto vai para uma função quando o gerenciador de memória funcionar.
@@ -163,13 +159,24 @@ void* tty1_thread()
 	running->cs = 0;
 	running->ds = 128;
 	
+	//Carregar programa na memória.
+	while(!feof(f))
+	{
+		fscanf(f, "%d %d", &mem[numlines + running->pc].inst, &mem[numlines + running->pc].op);
+		fprintf(tty1, "i= %d\to= %d\n", mem[numlines + running->pc].inst, mem[numlines + running->pc].op);
+		numlines++;
+	}
+	
+	printf("Rodando!\n\n");
+
+	
 	for(i = 0; i <= numlines - 1; i++)
 	{
 		fprintf(tty1, "Register dump!\n");
 		fprintf(tty1, "PC: %d\t CS: %d\t DS: %d\t ACC: %d\n", running->pc, running->cs, running->ds, running->acc);
 		fprintf(tty1, "line %d: ", i);
 		run_line();
-		pc++;
+		running->pc++;
 		fprintf(tty1, "\n");
 	}
 }
@@ -190,20 +197,10 @@ void* tty2_thread()
 	if(!f)
 	{
 		printf("Arquivo inválido!");
-		return -1;
+		exit(-1);
 	}
 	
 	running = p2; // Rodando p2.
-	
-	//Carregar programa na memória.
-	while(!feof(f))
-	{
-		fscanf(f, "%d %d", &mem[numlines].inst, &mem[numlines].op);
-		fprintf(tty2, "i= %d\to= %d\n", mem[numlines].inst, mem[numlines].op);
-		numlines++;
-	}
-	
-	printf("Rodando!\n\n");
 	
 	//Run program.
 	//Setar os registradores do programa rodando. Isto vai para uma função quando o gerenciador de memória funcionar.
@@ -213,13 +210,23 @@ void* tty2_thread()
 	running->cs = 0;
 	running->ds = 128;
 	
+	//Carregar programa na memória.
+	while(!feof(f))
+	{
+		fscanf(f, "%d %d", &mem[numlines + running->pc].inst, &mem[numlines + running->pc].op);
+		fprintf(tty2, "i= %d\to= %d\n", mem[numlines + running->pc].inst, mem[numlines + running->pc].op);
+		numlines++;
+	}
+	
+	printf("Rodando!\n\n");
+	
 	for(i = 0; i <= numlines - 1; i++)
 	{
 		fprintf(tty2, "Register dump!\n");
 		fprintf(tty2, "PC: %d\t CS: %d\t DS: %d\t ACC: %d\n", running->pc, running->cs, running->ds, running->acc);
 		fprintf(tty2, "line %d: ", i);
 		run_line();
-		pc++;
+		running->pc++;
 		fprintf(tty2, "\n");
 	}
 }
