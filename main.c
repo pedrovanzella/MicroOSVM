@@ -8,6 +8,7 @@
 #include "cpu.h"
 #include "memory.h"
 #include "globals.h"
+#include "memorymanager.h"
 
 unsigned char pc;
 unsigned char cs;
