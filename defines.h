@@ -18,6 +18,8 @@ typedef struct prcs {
 	
 	unsigned char block; 	/* Bloco de memória do programa */
 	FILE* tty;			    /* Nome do terminal */	
+	
+	char ready;				/* Programa existe, foi carregado, etc */
 } *process;
 
 #endif /*DEFINES_H*/

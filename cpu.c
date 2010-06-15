@@ -64,7 +64,7 @@ int run_line()
 			break;
 		case 11:
 			//Out de [op]
-			fprintf(running->tty, "$> %d", mem[mem[running->pc + running->cs].op + running->ds].inst);
+			fprintf(running->tty, "$> %d\n", mem[mem[running->pc + running->cs].op + running->ds].inst);
 			break;
 		case 12:
 			fprintf(running->tty, "Fim de execução\n");
