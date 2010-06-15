@@ -178,10 +178,12 @@ void* tty0_thread()
 		{
 			//MUTEX
 			pthread_mutex_lock(&runningMutex);
-				printf("Register dump!\n");
-				printf("PC: %d\t CS: %d\t DS: %d\t ACC: %d\n", running->pc, running->cs, running->ds, running->acc);
-				if(run_line() == PROG_END) break;
-				running->pc++;
+				if(running == p0)
+				{
+					printf("PC: %d\t CS: %d\t DS: %d\t ACC: %d\n", running->pc, running->cs, running->ds, running->acc);
+					if(run_line() == PROG_END) break;
+					running->pc++;
+				}
 			pthread_mutex_unlock(&runningMutex);
 			//MUTEX END
 		}
@@ -245,10 +247,12 @@ void* tty1_thread()
 		{
 			//MUTEX
 			pthread_mutex_lock(&runningMutex);
-				printf("Register dump!\n");
-				printf("PC: %d\t CS: %d\t DS: %d\t ACC: %d\n", running->pc, running->cs, running->ds, running->acc);
-				if(run_line() == PROG_END) break;
-				running->pc++;
+				if(running == p1)
+				{
+					printf("PC: %d\t CS: %d\t DS: %d\t ACC: %d\n", running->pc, running->cs, running->ds, running->acc);
+					if(run_line() == PROG_END) break;
+					running->pc++;
+				}
 			pthread_mutex_unlock(&runningMutex);
 			//MUTEX END
 		}
@@ -311,10 +315,12 @@ void* tty2_thread()
 		{
 			//MUTEX
 			pthread_mutex_lock(&runningMutex);
-				printf("Register dump!\n");
-				printf("PC: %d\t CS: %d\t DS: %d\t ACC: %d\n", running->pc, running->cs, running->ds, running->acc);
-				if(run_line() == PROG_END) break;
-				running->pc++;
+				if(running == p2)
+				{
+					printf("PC: %d\t CS: %d\t DS: %d\t ACC: %d\n", running->pc, running->cs, running->ds, running->acc);
+					if(run_line() == PROG_END) break;
+					running->pc++;
+				}
 			pthread_mutex_unlock(&runningMutex);
 			//MUTEX END
 		}
