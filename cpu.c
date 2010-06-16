@@ -40,22 +40,22 @@ int run_line()
 			break;
 		case 5:
 			/* op = running->acc */
-			mem[mem[running->pc].op + running->ds].inst = running->acc;
+			mem[mem[running->pc + running->cs].op + running->ds].inst = running->acc;
 			break;
 		case 6:
 			//NOP	
 			break;
 		case 7:
 			//Se running->acc > 0 salta para [op]
-			if(running->acc > 0) running->pc = mem[running->pc + running->cs].op;
+			if(running->acc > 0) running->pc = mem[running->pc + running->cs].op + running->cs;
 			break;
 		case 8:
 			//Se running->acc < 0 salta para [op]
-			if(running->acc < 0) running->pc = mem[running->pc + running->cs].op;
+			if(running->acc < 0) running->pc = mem[running->pc + running->cs].op + running->cs;
 			break;
 		case 9:
 			//Se running->acc == 0 salta para [op]
-			if(running->acc == 0) running->pc = mem[running->pc + running->cs].op;			
+			if(running->acc == 0) running->pc = mem[running->pc + running->cs].op + running->cs;			
 			break;
 		case 10:
 			//In para [op]
