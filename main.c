@@ -139,6 +139,8 @@ void* run()
 	while(1)
 	{
 		pthread_mutex_lock(&runningMutex);
+			if(running->ready == 1)
+			{
 				printf("PC: %d\t CS: %d\t DS: %d\t ACC: %d\n", running->pc, running->cs, running->ds, running->acc);
 				if(run_line() == PROG_END)
 				{
@@ -146,6 +148,7 @@ void* run()
 					break;
 				}
 				running->pc++;
+			}
 		pthread_mutex_unlock(&runningMutex);
 	}
 }
@@ -208,6 +211,7 @@ void* tty0_thread()
 		}
 		//Terminou execução
 */
+		while(p0->ready == 1) {} //Fica parado enquanto o processo está em execução.
 		
 		pthread_mutex_lock(&allocatorMutex);
 			if(p0->ready == 0)
@@ -281,6 +285,8 @@ void* tty1_thread()
 		}
 		//Terminou execução
 */
+
+		while(p1->ready == 1) {} //Fica parado enquanto o processo está em execução.
 		
 		pthread_mutex_lock(&allocatorMutex);
 			if(p1->ready == 0)
@@ -353,6 +359,7 @@ void* tty2_thread()
 		}
 		//Terminou execução
 */
+		while(p2->ready == 1) {} //Fica parado enquanto o processo está em execução.
 		
 		pthread_mutex_lock(&allocatorMutex);
 			if(p2->ready == 0)
