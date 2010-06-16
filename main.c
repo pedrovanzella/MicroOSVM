@@ -18,7 +18,7 @@ unsigned char cs;
 unsigned char ds;
 char acc;
 
-pthread_t tid0, tid1, tid2, tesc;
+pthread_t tid0, tid1, tid2, tesc, trun;
 pthread_mutex_t allocatorMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t runningMutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -29,6 +29,7 @@ void *tty1_thread();
 void *tty2_thread();
 
 void *escalonador();
+void *run();
 
 process p0, p1, p2;
 process running;
@@ -96,6 +97,7 @@ int main (int argc, char* argv[])
 	pthread_create(&tid0, NULL, tty0_thread, NULL);
 	pthread_create(&tid1, NULL, tty1_thread, NULL);
 	pthread_create(&tid2, NULL, tty2_thread, NULL);
+	pthread_create(&trun, NULL, run, NULL);
 
 	printf("Threads criadas.\n");
 
@@ -103,6 +105,7 @@ int main (int argc, char* argv[])
 	pthread_join(tid1, NULL);
 	pthread_join(tid2, NULL);
 	pthread_join(tesc, NULL);
+	pthread_join(trun, NULL);
 	
 	return 0;
 }
@@ -127,6 +130,22 @@ void* escalonador()
 				if(p0->ready) running = p0;
 				else if(p1->ready) running = p1;
 			}
+		pthread_mutex_unlock(&runningMutex);
+	}
+}
+
+void* run()
+{
+	while(1)
+	{
+		pthread_mutex_lock(&runningMutex);
+				printf("PC: %d\t CS: %d\t DS: %d\t ACC: %d\n", running->pc, running->cs, running->ds, running->acc);
+				if(run_line() == PROG_END)
+				{
+					running->ready = 0;
+					break;
+				}
+				running->pc++;
 		pthread_mutex_unlock(&runningMutex);
 	}
 }
@@ -174,7 +193,7 @@ void* tty0_thread()
 		p0->ready = 1;
 		printf("Rodando!\n\n");
 	
-		while(1)
+/*		while(1)
 		{
 			//MUTEX
 			pthread_mutex_lock(&runningMutex);
@@ -188,12 +207,16 @@ void* tty0_thread()
 			//MUTEX END
 		}
 		//Terminou execução
+*/
 		
 		pthread_mutex_lock(&allocatorMutex);
-			if(free_memory_block(running->block) == UNALLOCATED_MEM)
+			if(p0->ready == 0)
 			{
-				printf("Memória já foi desalocada. Algo muito errado aconteceu.\n");
-				continue;
+				if(free_memory_block(p0->block) == UNALLOCATED_MEM)
+				{
+					printf("Memória já foi desalocada. Algo muito errado aconteceu.\n");
+					continue;
+				}
 			}
 		pthread_mutex_unlock(&allocatorMutex);
 		
@@ -243,7 +266,7 @@ void* tty1_thread()
 		p1->ready = 1;
 		printf("Rodando!\n\n");
 	
-		while(1)
+/*		while(1)
 		{
 			//MUTEX
 			pthread_mutex_lock(&runningMutex);
@@ -257,12 +280,16 @@ void* tty1_thread()
 			//MUTEX END
 		}
 		//Terminou execução
+*/
 		
 		pthread_mutex_lock(&allocatorMutex);
-			if(free_memory_block(running->block) == UNALLOCATED_MEM)
+			if(p1->ready == 0)
 			{
-				printf("Memória já foi desalocada. Algo muito errado aconteceu.\n");
-				continue;
+				if(free_memory_block(p1->block) == UNALLOCATED_MEM)
+				{
+					printf("Memória já foi desalocada. Algo muito errado aconteceu.\n");
+					continue;
+				}
 			}
 		pthread_mutex_unlock(&allocatorMutex);
 	}
@@ -311,7 +338,7 @@ void* tty2_thread()
 		p2->ready = 1;
 		printf("Rodando!\n\n");
 	
-		while(1)
+/*		while(1)
 		{
 			//MUTEX
 			pthread_mutex_lock(&runningMutex);
@@ -325,12 +352,16 @@ void* tty2_thread()
 			//MUTEX END
 		}
 		//Terminou execução
+*/
 		
 		pthread_mutex_lock(&allocatorMutex);
-			if(free_memory_block(running->block) == UNALLOCATED_MEM)
+			if(p2->ready == 0)
 			{
-				printf("Memória já foi desalocada. Algo muito errado aconteceu.\n");
-				continue;
+				if(free_memory_block(running->block) == UNALLOCATED_MEM)
+				{
+					printf("Memória já foi desalocada. Algo muito errado aconteceu.\n");
+					continue;
+				}
 			}
 		pthread_mutex_unlock(&allocatorMutex);
 	}
